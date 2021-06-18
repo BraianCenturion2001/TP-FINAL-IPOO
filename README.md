@@ -14,8 +14,8 @@ El teatro ahora requiere administrar el costo de usar el teatro para poder utili
 
 2) Utilizar cada una de las clases y relaciones necesarias para implementar el sistema según las entregas anteriores. Puede modificar los nombres o atributos según le parezca.
 
-4) Implementar dentro de la clase TestTeatro una operación que permita ingresar, modificar y eliminar la información de un teatro.
+3) Implementar dentro de la clase TestTeatro una operación que permita ingresar, modificar y eliminar la información de un teatro.
 
-5) Implementar dentro de la clase TestTeatro una operación que permita ingresar, modificar y eliminar la información de una actividad del teatro, teniendo en cuenta las particularidades expuestas en el dominio a lo largo del cuatrimestre.
+4) Implementar dentro de la clase TestTeatro una operación que permita ingresar, modificar y eliminar la información de una actividad del teatro, teniendo en cuenta las particularidades expuestas en el dominio a lo largo del cuatrimestre.
 
-9) Volver a implementar el método darCostos, pero ahora, tomar los datos de la base de datos. Tener en cuenta que ahora puede existir mas de 1 teatro, por lo que se debe solicitar el teatro del cual se necesita verificar los costos.
+5) Volver a implementar el método darCostos, pero ahora, tomar los datos de la base de datos. Tener en cuenta que ahora puede existir mas de 1 teatro, por lo que se debe solicitar el teatro del cual se necesita verificar los costos.
