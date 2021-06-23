@@ -64,11 +64,10 @@ class Cine extends Funcion{
     public static function listar($condicion){
 	    $arreglo = null;
 		$base = new BaseDatos();
-		$consultaCine="SELECT * FROM cine";
+		$consultaCine="SELECT * FROM cine INNER JOIN funcion ON cine.idFuncion = funcion.idFuncion";
 		if ($condicion!=""){
 		    $consultaCine=$consultaCine.' where '.$condicion;
 		}
-		$consultaCine.=" order by idFuncion";
 		if($base->Iniciar()){
 			if($base->Ejecutar($consultaCine)){				
 				$arreglo= array();

@@ -40,17 +40,18 @@ class Teatro{
     }
 
 	public function darCostosPorFuncion($tipo, $idTeatro){
-		$acumPrecios = 0;
+		$acumCostos = 0;
 		$base = new BaseDatos();
 
-		$consultaPrecios = "SELECT funcion.costo from funcion INNER JOIN ".$tipo." ON funcion.idFuncion=".$tipo.".idFuncion WHERE funcion.idTeatro=".$idTeatro;
+		//no comillas en tipo
+		$consultaCostos = "SELECT funcion.costo from funcion INNER JOIN ".$tipo." ON funcion.idFuncion=".$tipo.".idFuncion WHERE funcion.idTeatro=".$idTeatro;
 
 		if($base->Iniciar()){
-            if($base->Ejecutar($consultaPrecios)){
-                $coleccionPrecios = array();
+            if($base->Ejecutar($consultaCostos)){
+                $coleccionCostos = array();
 				while($row2=$base->Registro()){
-                    $precio = ($row2['costo']);
-                    array_push($coleccionPrecios, $precio);
+                    $costo = ($row2['costo']);
+                    array_push($coleccionCostos, $costo);
 				}
             }else{
                 echo "ERROR EN LA EJECUCION DE LA BUSQUEDA DE PRECIO: " . $base->getError();
@@ -59,11 +60,11 @@ class Teatro{
             echo "ERROR: " . $base->getError();
         }
 
-		foreach($coleccionPrecios as $precioActual){
-			$acumPrecios = $acumPrecios + $precioActual;
+		foreach($coleccionCostos as $costoActual){
+			$acumCostos = $acumCostos + $costoActual;
 		}
 
-		return $acumPrecios;
+		return $acumCostos;
 
 	}
 
@@ -72,17 +73,17 @@ class Teatro{
 		$totalMusical = 0;
 		$totalCine = 0;
 
+		//Recorro cada tipo de función y traigo sus precios acumulados
 		$precioFuncionTeatro = $this->darCostosPorFuncion('funcionTeatro',$id);
-		echo $precioFuncionTeatro."\n";
 		$precioMusical = $this->darCostosPorFuncion('musical', $id);
-		echo $precioMusical."\n";
 		$precioCine = $this->darCostosPorFuncion('cine', $id);
-		echo $precioCine."\n";
 
+		//Aplico el porcentaje extra
 		$totalFuncionTeatro = ($precioFuncionTeatro + (($precioFuncionTeatro / 100) * 45));
 		$totalMusical = ($precioMusical + (($precioMusical / 100) * 12));
 		$totalCine = ($precioCine + (($precioCine / 100) * 65));
 
+		//Obtengo el total
 		$precioFinalTotal = $totalFuncionTeatro + $totalMusical + $totalCine;
 		return $precioFinalTotal;
 	}
@@ -108,7 +109,7 @@ class Teatro{
 					$this->setNombre($row2['nombre']);
 					$this->setDireccion($row2['direccion']);
 					$resp= true;
-				}				
+				}
 		 	}else{
                 $this->setmensajeoperacion($base->getError());
 			}

@@ -64,11 +64,10 @@ class Musical extends Funcion{
     public static function listar($condicion){
 	    $arreglo = null;
 		$base = new BaseDatos();
-		$consultaMusical="SELECT * FROM musical";
+		$consultaMusical="SELECT * FROM musical INNER JOIN funcion ON musical.idFuncion = funcion.idFuncion";
 		if ($condicion!=""){
 		    $consultaMusical=$consultaMusical.' where '.$condicion;
 		}
-		$consultaMusical.=" order by idFuncion";
 		if($base->Iniciar()){
 			if($base->Ejecutar($consultaMusical)){				
 				$arreglo= array();

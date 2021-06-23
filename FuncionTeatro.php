@@ -46,11 +46,10 @@ class FuncionTeatro extends Funcion{
     public static function listar($condicion){
 	    $arreglo = null;
 		$base = new BaseDatos();
-		$consultaFuncionTeatro="SELECT * FROM funcionTeatro";
+		$consultaFuncionTeatro="SELECT * FROM funcionTeatro INNER JOIN funcion ON funcionTeatro.idFuncion = funcion.idFuncion";
 		if ($condicion!=""){
 		    $consultaFuncionTeatro=$consultaFuncionTeatro.' where '.$condicion;
 		}
-		$consultaFuncionTeatro.=" order by idFuncion";
 		if($base->Iniciar()){
 			if($base->Ejecutar($consultaFuncionTeatro)){				
 				$arreglo= array();

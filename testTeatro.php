@@ -7,10 +7,12 @@ include 'Musical.php';
 include 'Cine.php';
 
 function crearTeatro(){
+    echo "-------------- CREAR TEATRO --------------- \n";
     echo "INGRESE EL NOMBRE DEL NUEVO TEATRO: ";
     $nombre = trim(fgets(STDIN));
     echo "INGRESE LA DIRECCIÓN DEL NUEVO TEATRO: ";
     $direccion = trim(fgets(STDIN));
+    echo "------------------------------------------- \n";
 
     $teatro = new Teatro ($nombre, $direccion);
 
@@ -25,11 +27,11 @@ function crearTeatro(){
 }
 
 function modificarTeatro($objTeatro){
-    echo "------------------ INFORMACIÓN ACTUAL --------------------- \n";
+    echo "----------- INFORMACIÓN ACTUAL ------------ \n";
     echo "NOMBRE DEL TEATRO: ".$objTeatro->getNombre()."\n";
     echo "DIRECCIÓN DEL TEATRO: ".$objTeatro->getDireccion()."\n";
 
-    echo "------------------- NUEVA INFORMACIÓN -------------------- \n";
+    echo "----------- NUEVA INFORMACIÓN ------------- \n";
     echo "INGRESE NOMBRE: ";
     $nuevoNombre = trim(fgets(STDIN));
     echo "INGRESE DIRECCIÓN: ";
@@ -39,8 +41,8 @@ function modificarTeatro($objTeatro){
 
     $respuestaModificar = $objTeatro->modificar();
 
-    if ($respuestaModificar){        
-        echo "---------------- TEATRO ".$objTeatro->getId()." MODIFICADO -------------------- \n";
+    if ($respuestaModificar){
+        echo "---------- TEATRO ".$objTeatro->getId()." MODIFICADO ------------ \n";
         echo $objTeatro;
     } else {
         echo "MODIFICACÓN ERRONEA! ".$objTeatro->getmensajeoperacion()."\n";
@@ -48,45 +50,57 @@ function modificarTeatro($objTeatro){
 }
 
 function crearFuncion($teatro){
-    echo "------------------ FUNCIÓN -------------------- \n";
+
+    $idTeatro = $teatro->getId();
+    echo "------------- CREAR FUNCIÓN --------------- \n";
     echo "INGRESE EL NOMBRE DE LA FUNCIÓN: ";
     $nombreFuncion = trim(fgets(STDIN));
-    echo "INGRESE EL HORARIO DE INICIO DE LA FUNCIÓN: ";
-    $horarioFuncion = trim(fgets(STDIN));
-    echo "INGRESE LA DURACIÓN DE LA FUNCIÓN: ";
-    $duracionFuncion = trim(fgets(STDIN));
+    //Verifico si el nuevo horario no coincide con otro
+    do{
+        $horarioPermitido = false;
+
+        echo "INGRESE EL HORARIO DE INICIO DE LA FUNCIÓN: ";
+        $horarioFuncion = trim(fgets(STDIN));
+        echo "INGRESE LA DURACIÓN DE LA FUNCIÓN: ";
+        $duracionFuncion = trim(fgets(STDIN));
+
+        $verificar = verificarSolapamiento($horarioFuncion, $duracionFuncion, $idTeatro);
+
+        if ($verificar){
+            echo "----------- HORARIO DISPONIBLE ------------ \n";
+            $horarioPermitido = true;
+        } else {
+            echo "---------- HORARIO NO DISPONIBLE ---------- \n";
+            echo "--------- POR FAVOR INGRESE OTRO ---------- \n";
+        }
+
+    } while ($horarioPermitido<>true);
+
     echo "INGRESE EL COSTO DE LA FUNCIÓN: ";
     $costoFuncion = trim(fgets(STDIN));
-    echo "---------------------------------------------- \n";
+    echo "------------------------------------------- \n";
 
-    //$funcionNueva = new Funcion($teatro, $nombreFuncion, $horarioFuncion, $duracionFuncion, $costoFuncion);
-    //$respFuncion = $funcionNueva->insertar();
+    $arrayInfo = array('teatro'=>$teatro, 'nombre'=>$nombreFuncion, 'horario'=>$horarioFuncion, 'duracion'=>$duracionFuncion, 'costo'=>$costoFuncion);
 
-    //if($respFuncion){
-       // $idFuncion = $funcionNueva->getId();
+    echo "ELIJA DE QUE TIPO SERÁ LA FUNCIÓN: \n";
+    echo "( 1 ) FUNCIÓN DE TEATRO \n";
+    echo "( 2 ) MUSICAL \n";
+    echo "( 3 ) CINE \n";
+    $opcionFuncion = trim(fgets(STDIN));
 
-        $arrayInfo = array('teatro'=>$teatro, 'nombre'=>$nombreFuncion, 'horario'=>$horarioFuncion, 'duracion'=>$duracionFuncion, 'costo'=>$costoFuncion);
-
-        echo "ELIJA DE QUE TIPO SERÁ LA FUNCIÓN: \n";
-        echo "( 1 ) FUNCIÓN DE TEATRO \n";
-        echo "( 2 ) MUSICAL \n";
-        echo "( 3 ) CINE \n";
-        $opcionFuncion = trim(fgets(STDIN));
-
-        if ($opcionFuncion==1){
-            crearFuncionTeatro($arrayInfo);
-        } elseif ($opcionFuncion==2){
-            crearMusical($arrayInfo);
-        } elseif ($opcionFuncion==3){
-            crearCine($arrayInfo);
-        } else {
-            echo "OPCIÓN ERRONEA!!! \n";
-        }
-    //}
+    if ($opcionFuncion==1){
+        crearFuncionTeatro($arrayInfo);
+    } elseif ($opcionFuncion==2){
+        crearMusical($arrayInfo);
+    } elseif ($opcionFuncion==3){
+        crearCine($arrayInfo);
+    } else {
+        echo "OPCIÓN ERRONEA!!! \n";
+    }
 }
 
 function crearFuncionTeatro($objFuncion){
-    echo "------------------- FUNCIÓN DE TEATRO -------------------- \n";
+    echo "----------- FUNCIÓN DE TEATRO ------------- \n";
     $funcionTeatro = new FuncionTeatro($objFuncion['teatro'], $objFuncion['nombre'], $objFuncion['horario'], $objFuncion['duracion'], $objFuncion['costo']);
 
     $respuestaInsertar = $funcionTeatro->insertar();
@@ -100,12 +114,12 @@ function crearFuncionTeatro($objFuncion){
 }
 
 function crearMusical($objFuncion){
-    echo "------------------- MUSICAL -------------------- \n";
+    echo "---------------- MUSICAL ------------------ \n";
     echo "INGRESE EL NOMBRE DEL DIRECTOR DEL MUSICAL: ";
     $director = trim(fgets(STDIN));
     echo "INGRESE LA CANTIDAD DE PERSONAS QUE ASISTIRAN AL MUSICAL: ";
     $cantPersonas = trim(fgets(STDIN));
-    echo "---------------------------------------------- \n";
+    echo "------------------------------------------- \n";
 
     $musical = new Musical($objFuncion['teatro'], $objFuncion['nombre'], $objFuncion['horario'], $objFuncion['duracion'], $objFuncion['costo'], $director, $cantPersonas);
 
@@ -120,12 +134,12 @@ function crearMusical($objFuncion){
 }
 
 function crearCine($objFuncion){
-    echo "------------------ CINE ----------------------- \n";
+    echo "----------------- CINE -------------------- \n";
     echo "INGRESE EL GÉNERO DE LA PELÍCULA: ";
     $genero = trim(fgets(STDIN));
     echo "INGRESE EL PAÍS DE ORIGEN DE LA PELÍCULA: ";
     $pais = trim(fgets(STDIN));
-    echo "---------------------------------------------- \n";
+    echo "------------------------------------------- \n";
 
     $cine = new Cine($objFuncion['teatro'], $objFuncion['nombre'], $objFuncion['horario'], $objFuncion['duracion'], $objFuncion['costo'], $genero, $pais);
     
@@ -140,13 +154,13 @@ function crearCine($objFuncion){
 }
 
 function modificarFuncion($objFuncion){
-    echo "------------------ INFORMACIÓN ACTUAL --------------------- \n";
+    echo "----------- INFORMACIÓN ACTUAL ------------ \n";
     echo "NOMBRE DE LA FUNCIÓN: ".$objFuncion->getNombre()."\n";
     echo "HORARIO DE INICIO DE LA FUNCIÓN: ".$objFuncion->getHorarioInicio()."\n";
     echo "DURACIÓN DE LA FUNCIÓN: ".$objFuncion->getDuracion()."\n";
     echo "COSTO DE LA FUNCIÓN: ".$objFuncion->getCosto()."\n";
 
-    echo "------------------- NUEVA INFORMACIÓN -------------------- \n";
+    echo "----------- NUEVA INFORMACIÓN ------------- \n";
     echo "INGRESE EL NOMBRE: ";
     $nuevoNombre = trim(fgets(STDIN));
     echo "INGRESE EL HORARIO DE INICIO: ";
@@ -161,7 +175,7 @@ function modificarFuncion($objFuncion){
     $respuestaModificar = $objFuncion->modificar();
 
     if ($respuestaModificar){
-        echo "---------------- FUNCIÓN ".$objFuncion->getId()." MODIFICADA -------------------- \n";
+        echo "--------- FUNCIÓN ".$objFuncion->getId()." MODIFICADA ------------ \n";
         echo $objFuncion;
     } else {
         echo "MODIFICACÓN ERRONEA! ".$objFuncion->getmensajeoperacion()."\n";
@@ -171,14 +185,97 @@ function modificarFuncion($objFuncion){
 function mostrarFuncion($arreglo){
     $contador = 1;
     if (count($arreglo)<1){
-        echo "#################### SIN FUNCIONES #################### \n";
+        echo "############ NO HAY FUNCIONES ############# \n";
     } else {
         foreach($arreglo as $funcionActual){
-            echo "·········· FUNCIÓN Nº: ".$contador." ·········· \n";
+            echo "·············· FUNCIÓN Nº: ".$contador." ·············· \n";
             echo $funcionActual;
             $contador ++;
         }
     }
+}
+
+function verificarSolapamiento($horario, $duracion, $idTeatroNuevaFuncion){
+    //Traigo las colecciones de cada tipo
+    $funcionTeatro = new FuncionTeatro('', '', '', '', '');
+    $coleccionFuncionesTeatro = $funcionTeatro->listar("");
+    $cine = new Cine('','','','','','','');
+    $coleccionCines = $cine->listar("");
+    $musical = new Musical('','','','','','','');
+    $coleccionMusicales = $musical->listar("");
+
+    $retorno = false;
+
+    list($horaFuncion, $minutosFuncion) = explode(":", $horario); //Extraigo la hora y los minutos separados por el ":"
+    $hora = intval($horaFuncion); //Convierto la hora de string a entero
+    $minutos = intval($minutosFuncion); //Convierto los minutos de string a entero
+
+    $horarioInicioFuncion = (($hora * 60) + $minutos); //Convierto el horario de INICIO de la nueva funcion a minutos
+    $horarioCierreFuncion = $horarioInicioFuncion + $duracion;  //Horario de CIERRE de la nueva funcion
+
+    $horarioFuncionNueva = array('inicio'=>$horarioInicioFuncion, 'cierre'=>$horarioCierreFuncion);
+
+    $coleccionHorarios = [];
+
+    //Sumo los horarios de cada tipo
+    $coleccionHorarios = armarColeccionHorarios($coleccionFuncionesTeatro, $idTeatroNuevaFuncion, $coleccionHorarios);
+    $coleccionHorarios = armarColeccionHorarios($coleccionCines, $idTeatroNuevaFuncion, $coleccionHorarios);
+    $coleccionHorarios = armarColeccionHorarios($coleccionMusicales, $idTeatroNuevaFuncion, $coleccionHorarios);
+
+    if (count($coleccionHorarios)>0){
+        $horarioDisponible = verificarHorario($horarioFuncionNueva, $coleccionHorarios);
+        if ($horarioDisponible){
+            $retorno = true;
+        }
+    } else {
+        $retorno = true;
+    }
+
+    return $retorno;
+}
+
+function armarColeccionHorarios($coleccionFunciones, $idTeatro, $arreglo){
+
+    foreach($coleccionFunciones as $funcionActual){
+
+        $idTeatroFuncionActual = $funcionActual->getObjTeatro()->getId(); //Traigo el id del teatro de la funcion actual
+
+        if ($idTeatro==$idTeatroFuncionActual){
+            $horarioFuncionActual = $funcionActual->getHorarioInicio(); //Traigo el horario de la funcion actual
+            $duracionFuncionActual = $funcionActual->getDuracion(); //Traigo la duracion de la funcion actual
+
+            list($horaFuncion, $minutosFuncion) = explode(":", $horarioFuncionActual); //Extraigo la hora y los minutos separados por el ":"
+            $hora = intval($horaFuncion); //Convierto la hora de string a entero
+            $minutos = intval($minutosFuncion); //Convierto los minutos de string a entero
+
+            $horarioInicioFuncionActual = (($hora * 60) + $minutos); //Convierto el horario de INICIO de la funcion actual a minutos
+            $horarioCierreFuncionActual = $horarioInicioFuncionActual + $duracionFuncionActual; //Consigo el horario de CIERRE de la funcion actual
+
+            $arregloFuncionActual = array('inicio'=>$horarioInicioFuncionActual, 'cierre'=>$horarioCierreFuncionActual); //Creo el arreglo
+            array_push($arreglo, $arregloFuncionActual); //Lo añado a la coleccion de horarios
+
+        }
+    }
+
+    return $arreglo;
+
+}
+
+function verificarHorario($horarioFuncion, $horarios){
+    $verificado=false;
+
+    foreach($horarios as $horarioActual){
+        //Que la funcion nueva termine antes o empiece despues de la funcion actual
+        if (($horarioFuncion['inicio']>=$horarioActual['inicio'])&&($horarioFuncion['inicio']<=$horarioActual['cierre'])){
+            $verificado = false;
+        } elseif (($horarioFuncion['cierre']>=$horarioActual['inicio'])&&($horarioFuncion['cierre']<=$horarioActual['cierre'])){
+            $verificado = false;
+        } else {
+            $verificado = true;
+        }
+    }
+
+    return $verificado;
 }
 
 
@@ -187,28 +284,30 @@ function mostrarFuncion($arreglo){
 //Creo un teatro y una funcion vacia 
 $teatroVacio = new Teatro('', '');
 $funcionVacia = new Funcion('', '', '', '', '');
-
+//Creo una funcion vacia de cada tipo
 $funcionTeatroVacio = new FuncionTeatro('', '', '', '', '');
 $funcionCineVacio = new Cine('', '', '', '', '', '', '');
 $funcionMusicalVacio = new Musical('', '', '', '', '', '', '');
 
 do{
-    echo "-------------------- MENÚ PRINCIPAL -------------------- \n";
-    echo "----------------------- TEATROS ------------------------ \n";
+    echo "------------- MENÚ PRINCIPAL -------------- \n";
+    echo "---------------- TEATROS ------------------ \n";
     echo "( 1 ) CREAR UN TEATRO \n";
     echo "( 2 ) MODIFICAR UN TEATRO \n";
     echo "( 3 ) ELIMINAR UN TEATRO \n";
     echo "( 4 ) LISTAR TEATROS \n";
-    echo "---------------------- FUNCIONES ----------------------- \n";
+    echo "--------------- FUNCIONES ----------------- \n";
     echo "( 5 ) CREAR UNA FUNCIÓN \n";
     echo "( 6 ) MODIFICAR UNA FUNCIÓN \n";
     echo "( 7 ) ELIMINAR UNA FUNCIÓN \n";
     echo "( 8 ) LISTAR FUNCIONES \n";
-    echo "----------------------- OTROS -------------------------- \n";
+    echo "----------------- OTROS ------------------- \n";
     echo "( 9 ) DAR COSTOS \n";
     echo "( 10 ) SALIR \n";
     echo "SELECCIONE UNA OPCIÓN: ";
     $respuesta = trim(fgets(STDIN));
+    echo "------------------------------------------- \n";
+
 
     switch($respuesta){
         case '1':
@@ -218,15 +317,15 @@ do{
             $coleccionTeatros = $teatroVacio->listar("");
             $numero = 1;
             if (count($coleccionTeatros)<1){
-                echo "########## NO HAY TEATROS ########## \n";
+                echo "############# NO HAY TEATROS ############## \n";
             }else{
-                echo "########## COLECCION TEATROS ########## \n";
+                echo "············ COLECCION TEATROS ············ \n";
                 foreach($coleccionTeatros as $teatroActual){
                     echo "·········· TEATRO Nº: ".$numero." ·········· \n";
                     echo $teatroActual;
                     $numero ++;
                 }
-                echo "------------------------------------------------ \n";
+                echo "··········································· \n";
                 echo "INGRESE EL ID DEL TEATRO A MODIFICAR: ";
                 $idBuscar = trim(fgets(STDIN));
 
@@ -244,15 +343,15 @@ do{
             $coleccionTeatros = $teatroVacio->listar("");
             $numero = 1;
             if (count($coleccionTeatros)<1){
-                echo "########## NO HAY TEATROS ########## \n";
+                echo "############# NO HAY TEATROS ############## \n";
             }else{
-                echo "########## COLECCION TEATROS ########## \n";
+                echo "············ COLECCION TEATROS ············ \n";
                 foreach($coleccionTeatros as $teatroActual){
                     echo "·········· TEATRO Nº: ".$numero." ·········· \n";
                     echo $teatroActual;
                     $numero ++;
                 }
-                echo "------------------------------------------------ \n";
+                echo "··········································· \n";
                 echo "INGRESE EL ID DEL TEATRO A ELIMINAR: ";
                 $idEliminar = trim(fgets(STDIN));
 
@@ -276,12 +375,29 @@ do{
             $coleccionTeatros = $teatroVacio->listar("");
             $numero = 1;
             if (count($coleccionTeatros)<1){
-                echo "########## NO HAY TEATROS ########## \n";
+                echo "############# NO HAY TEATROS ############## \n";
             }else{
-                echo "########## COLECCION TEATROS ########## \n";
+                echo "············ COLECCION TEATROS ············ \n";
                 foreach($coleccionTeatros as $teatroActual){
-                    echo "·········· TEATRO Nº: ".$numero." ·········· \n";
+                    echo "·············· TEATRO Nº: ".$numero." ··············· \n";
                     echo $teatroActual;
+
+                    $idTeatroActual = $teatroActual->getId();
+
+                    $condicion = "funcion.idTeatro=".$idTeatroActual;
+
+                    $coleccionTeatro = $funcionTeatroVacio->listar($condicion);
+                    $coleccionMusical = $funcionMusicalVacio->listar($condicion);
+                    $coleccionCine = $funcionCineVacio->listar($condicion);
+
+                    echo "··········· FUNCIONES DE TEATRO ··········· \n";
+                    mostrarFuncion($coleccionTeatro);
+                    echo "··········· FUNCIONES MUSICALES ··········· \n";
+                    mostrarFuncion($coleccionMusical);
+                    echo "············ FUNCIONES DE CINE ············ \n";
+                    mostrarFuncion($coleccionCine);
+                    echo "··········································· \n";
+
                     $numero ++;
                 }
             }
@@ -290,16 +406,16 @@ do{
             $coleccionTeatros = $teatroVacio->listar("");
             $numero = 1;
             if (count($coleccionTeatros)<1){
-                echo "########## NO HAY TEATROS ########## \n";
+                echo "############# NO HAY TEATROS ############## \n";
             }else{
-                echo "########## COLECCION TEATROS ########## \n";
+                echo "············ COLECCION TEATROS ············ \n";
                 foreach($coleccionTeatros as $teatroActual){
                     echo "·········· TEATRO Nº: ".$numero." ·········· \n";
                     echo $teatroActual;
                     $numero ++;
                 }
             }
-            echo "------------------------------------------------ \n";
+            echo "··········································· \n";
             echo "INGRESE EL ID DEL TEATRO PARA AÑADIRLE UNA FUNCION: ";
             $idTeatro = trim(fgets(STDIN));
 
@@ -456,13 +572,13 @@ do{
             $coleccionMusical = $funcionMusicalVacio->listar("");
             $coleccionCine = $funcionCineVacio->listar("");
 
-            echo "#################### COLECCION FUNCIONES DE TEATRO #################### \n";
+            echo "······ COLECCION FUNCIONES DE TEATRO ······ \n";
             mostrarFuncion($coleccionFuncionesTeatro);
 
-            echo "#################### COLECCION MUSICALES #################### \n";
+            echo "··········· COLECCION MUSICALES ··········· \n";
             mostrarFuncion($coleccionMusical);
             
-            echo "#################### COLECCION CINES #################### \n";
+            echo "············· COLECCION CINES ············· \n";
             mostrarFuncion($coleccionCine);
             
         break;
@@ -482,6 +598,6 @@ do{
     }
 } while ($respuesta <> 10);
 
-echo "-------------------- MENÚ CERRADO ---------------------";
+echo "-------------- MENÚ CERRADO ---------------";
 
 ?>

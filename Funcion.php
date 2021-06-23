@@ -103,15 +103,13 @@ class Funcion{
         return $resp;
 	}
 
-    
     public static function listar($condicion){
 	    $arregloFunciones = null;
 		$base = new BaseDatos();
         $consultaFuncion = "SELECT * FROM funcion";
         if($condicion!=""){
-            $consultaFuncion = $consultaFuncion.' WHERE '.$condicion;
+            $consultaFuncion = $consultaFuncion.' where '.$condicion;
         }
-		$consultaFuncion.=" order by idFuncion";
 		if($base->Iniciar()){
 			if($base->Ejecutar($consultaFuncion)){				
 				$arregloFunciones = array();
@@ -185,14 +183,13 @@ class Funcion{
 	}
 
     public function __toString(){
-        $teatro = $this->getObjTeatro();
-        $cadena = $teatro->__toString();
-        $cadena .= "ID FUNCION: ".$this->getId()."\n".
+        $idTeatro = $this->getObjTeatro()->getId();
+        return  "ID FUNCION: ".$this->getId()."\n".
+                "ID TEATRO: ".$idTeatro."\n".
                 "NOMBRE: ".$this->getNombre()."\n".
                 "HORARIO INICIO: ".$this->getHorarioInicio()."\n".
                 "DURACIÓN: ".$this->getDuracion()."\n".
                 "COSTO DE LA SALA: ".$this->getCosto()."\n";
-        return $cadena;
     }
 }
 
