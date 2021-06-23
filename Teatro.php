@@ -7,6 +7,7 @@ class Teatro{
     private $nombre;
     private $direccion;
     private $mensajeoperacion;
+	private $coleccionFunciones;
 
     public function __construct($nombre, $direccion){
         $this->nombre = $nombre;
@@ -25,6 +26,23 @@ class Teatro{
     public function getmensajeoperacion(){
         return $this->mensajeoperacion;
     }
+	public function getColeccionFunciones(){
+		$id = $this->getId();
+		
+        $condicion = "funcion.idTeatro=".$id;
+
+		$teatroFuncion = new FuncionTeatro('','','','','');
+		$musical = new Musical('','','','','','','');
+		$cine = new Cine('','','','','','','');
+
+        $coleccionTeatro = $teatroFuncion->listar($condicion);
+        $coleccionMusical = $musical->listar($condicion);
+        $coleccionCine = $cine->listar($condicion);
+
+		$coleccion = array_merge($coleccionTeatro, $coleccionMusical,$coleccionCine);
+
+		return $coleccion;
+	}
 
     public function setId($id){
         $this->idTeatro = $id;
@@ -38,6 +56,9 @@ class Teatro{
     public function setmensajeoperacion($mensajeoperacion){
         $this->mensajeoperacion = $mensajeoperacion;
     }
+	public function setColeccionFunciones($coleccionFunciones){
+		$this->coleccionFunciones = $coleccionFunciones;
+	}
 
 	public function darCostosPorFuncion($tipo, $idTeatro){
 		$acumCostos = 0;

@@ -382,20 +382,11 @@ do{
                     echo "·············· TEATRO Nº: ".$numero." ··············· \n";
                     echo $teatroActual;
 
-                    $idTeatroActual = $teatroActual->getId();
+                    $coleccionTeatroActual = $teatroActual->getColeccionFunciones();
 
-                    $condicion = "funcion.idTeatro=".$idTeatroActual;
-
-                    $coleccionTeatro = $funcionTeatroVacio->listar($condicion);
-                    $coleccionMusical = $funcionMusicalVacio->listar($condicion);
-                    $coleccionCine = $funcionCineVacio->listar($condicion);
-
-                    echo "··········· FUNCIONES DE TEATRO ··········· \n";
-                    mostrarFuncion($coleccionTeatro);
-                    echo "··········· FUNCIONES MUSICALES ··········· \n";
-                    mostrarFuncion($coleccionMusical);
-                    echo "············ FUNCIONES DE CINE ············ \n";
-                    mostrarFuncion($coleccionCine);
+                    echo "········ FUNCIONES DEL TEATRO ".$teatroActual->getId()." ·········· \n";
+                    mostrarFuncion($coleccionTeatroActual);
+                    
                     echo "··········································· \n";
 
                     $numero ++;
